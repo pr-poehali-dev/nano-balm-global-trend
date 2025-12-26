@@ -56,6 +56,69 @@ const products = [
   }
 ];
 
+const testimonials = [
+  {
+    id: 1,
+    name: 'Елена Соколова',
+    age: 42,
+    product: 'Harmony Lux',
+    rating: 5,
+    text: 'После месяца применения Harmony Lux полностью нормализовался сон. Раньше просыпалась по 3-4 раза за ночь, сейчас сплю как младенец. Стала намного спокойнее реагировать на стрессовые ситуации на работе.',
+    result: 'Качество сна улучшилось на 90%',
+    period: '1 месяц применения'
+  },
+  {
+    id: 2,
+    name: 'Дмитрий Волков',
+    age: 35,
+    product: 'Vitality Lux',
+    rating: 5,
+    text: 'Работаю в IT, постоянно чувствовал упадок сил к обеду. После курса Vitality Lux энергия держится весь день. Стал заниматься спортом по вечерам, хотя раньше не было сил даже дойти до спортзала.',
+    result: 'Уровень энергии +70%',
+    period: '6 недель применения'
+  },
+  {
+    id: 3,
+    name: 'Ирина Петрова',
+    age: 55,
+    product: 'Smart Lux',
+    rating: 5,
+    text: 'Начала замечать проблемы с памятью — забывала имена, где что положила. Smart Lux вернул мне ясность ума! Теперь легко запоминаю информацию, быстрее решаю рабочие задачи.',
+    result: 'Память и концентрация улучшились',
+    period: '2 месяца применения'
+  },
+  {
+    id: 4,
+    name: 'Александр Морозов',
+    age: 48,
+    product: 'Pavlov Spring',
+    rating: 5,
+    text: 'Прошёл детокс-курс с Pavlov Spring. Ушла тяжесть в теле, улучшилось пищеварение, кожа стала чище. Чувствую себя обновлённым, будто скинул 10 лет!',
+    result: 'Полное обновление организма',
+    period: '3 недели применения'
+  },
+  {
+    id: 5,
+    name: 'Мария Новикова',
+    age: 39,
+    product: 'Perfecto Lux',
+    rating: 5,
+    text: 'Использую Perfecto Lux для профилактики. За полгода ни разу не болела, хотя раньше простуды были частыми гостями. Ногти и волосы стали крепче, общее самочувствие отличное!',
+    result: 'Иммунитет укрепился, 0 болезней за полгода',
+    period: '6 месяцев применения'
+  },
+  {
+    id: 6,
+    name: 'Сергей Лебедев',
+    age: 51,
+    product: 'Harmony Lux',
+    rating: 5,
+    text: 'Постоянное напряжение из-за бизнеса привело к проблемам с давлением. Harmony Lux помог стабилизировать состояние, научился лучше справляться с эмоциями. Давление пришло в норму.',
+    result: 'Давление нормализовалось',
+    period: '2 месяца применения'
+  }
+];
+
 const Index = () => {
   const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
@@ -229,6 +292,54 @@ const Index = () => {
                       <Icon name="MessageCircle" size={16} />
                       Консультация
                     </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">Отзывы наших клиентов</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Реальные истории людей, которые восстановили своё здоровье с помощью нано-бальзамов
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testimonials.map((testimonial) => (
+              <Card key={testimonial.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <CardTitle className="text-xl mb-1">{testimonial.name}</CardTitle>
+                      <CardDescription className="text-sm">
+                        {testimonial.age} лет · {testimonial.product}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-0.5">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Icon key={i} name="Star" size={16} className="text-yellow-500 fill-yellow-500" />
+                      ))}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground leading-relaxed italic">
+                    "{testimonial.text}"
+                  </p>
+                  <div className="pt-3 border-t border-border space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Icon name="TrendingUp" size={16} className="text-primary flex-shrink-0" />
+                      <span className="text-sm font-semibold text-primary">{testimonial.result}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="Clock" size={16} className="text-muted-foreground flex-shrink-0" />
+                      <span className="text-xs text-muted-foreground">{testimonial.period}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
