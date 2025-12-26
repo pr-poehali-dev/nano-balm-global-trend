@@ -119,16 +119,64 @@ const testimonials = [
   }
 ];
 
+const beforeAfterCases = [
+  {
+    id: 1,
+    name: 'Елена, 42 года',
+    product: 'Harmony Lux',
+    problem: 'Хроническая бессонница и стресс',
+    result: 'Полное восстановление сна и эмоционального баланса',
+    duration: '4 недели',
+    image: 'https://cdn.poehali.dev/projects/0fb2fa43-a518-4a7c-87b3-d9010469328f/files/44775f2e-4feb-431b-8ba7-5eaffe847f49.jpg',
+    metrics: [
+      { label: 'Качество сна', before: '3/10', after: '9/10' },
+      { label: 'Уровень стресса', before: '8/10', after: '2/10' },
+      { label: 'Общее самочувствие', before: '4/10', after: '9/10' }
+    ]
+  },
+  {
+    id: 2,
+    name: 'Дмитрий, 35 лет',
+    product: 'Vitality Lux',
+    problem: 'Постоянная усталость и низкая энергия',
+    result: 'Прилив энергии, активный образ жизни',
+    duration: '6 недель',
+    image: 'https://cdn.poehali.dev/projects/0fb2fa43-a518-4a7c-87b3-d9010469328f/files/113d3379-be84-452b-ab2b-bd5586760bdc.jpg',
+    metrics: [
+      { label: 'Уровень энергии', before: '3/10', after: '9/10' },
+      { label: 'Выносливость', before: '4/10', after: '8/10' },
+      { label: 'Продуктивность', before: '5/10', after: '9/10' }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Ирина, 55 лет',
+    product: 'Smart Lux',
+    problem: 'Ухудшение памяти и концентрации',
+    result: 'Восстановление когнитивных функций',
+    duration: '8 недель',
+    image: 'https://cdn.poehali.dev/projects/0fb2fa43-a518-4a7c-87b3-d9010469328f/files/8d094b4f-c667-4f03-b308-13d1755a4d8c.jpg',
+    metrics: [
+      { label: 'Память', before: '4/10', after: '8/10' },
+      { label: 'Концентрация', before: '3/10', after: '9/10' },
+      { label: 'Ясность мышления', before: '4/10', after: '9/10' }
+    ]
+  }
+];
+
 const Index = () => {
   const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
   const [consultationOpen, setConsultationOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<typeof beforeAfterCases[0] | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     message: '',
-    product: ''
+    product: '',
+    date: '',
+    time: ''
   });
 
   const handleConsultation = (productName?: string) => {
@@ -138,12 +186,34 @@ const Index = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const appointmentDetails = formData.date && formData.time 
+      ? `Время консультации: ${formData.date} в ${formData.time}`
+      : 'Наш специалист свяжется с вами для согласования времени.';
+    
     toast({
       title: 'Заявка отправлена!',
-      description: 'Наш специалист свяжется с вами в ближайшее время.',
+      description: appointmentDetails,
     });
     setConsultationOpen(false);
-    setFormData({ name: '', phone: '', email: '', message: '', product: '' });
+    setFormData({ name: '', phone: '', email: '', message: '', product: '', date: '', time: '' });
+  };
+
+  const getAvailableTimes = () => {
+    return [
+      '09:00', '10:00', '11:00', '12:00', 
+      '14:00', '15:00', '16:00', '17:00', '18:00'
+    ];
+  };
+
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  const getMaxDate = () => {
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    return maxDate.toISOString().split('T')[0];
   };
 
   return (
@@ -293,6 +363,73 @@ const Index = () => {
                       Консультация
                     </Button>
                   </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-card/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">Реальные результаты До/После</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Документированные кейсы восстановления здоровья наших клиентов
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {beforeAfterCases.map((caseItem) => (
+              <Card 
+                key={caseItem.id} 
+                className="group hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden"
+                onClick={() => setSelectedCase(caseItem)}
+              >
+                <div className="relative overflow-hidden aspect-[4/3]">
+                  <img 
+                    src={caseItem.image} 
+                    alt={`${caseItem.name} - результат`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                    {caseItem.duration}
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-xl">{caseItem.name}</CardTitle>
+                  <CardDescription className="text-sm font-medium text-primary">
+                    {caseItem.product}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <Icon name="AlertCircle" size={16} className="text-destructive flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Проблема:</p>
+                        <p className="text-sm font-medium">{caseItem.problem}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Icon name="CheckCircle" size={16} className="text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Результат:</p>
+                        <p className="text-sm font-medium text-primary">{caseItem.result}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedCase(caseItem);
+                    }}
+                  >
+                    Посмотреть подробности
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -471,6 +608,44 @@ const Index = () => {
                 placeholder="ivan@example.com"
               />
             </div>
+
+            <div className="p-4 bg-muted/50 rounded-lg space-y-3">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Icon name="Calendar" size={18} className="text-primary" />
+                <span>Выберите удобное время консультации</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="date">Дата</Label>
+                  <Input 
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                    min={getMinDate()}
+                    max={getMaxDate()}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time">Время</Label>
+                  <select
+                    id="time"
+                    value={formData.time}
+                    onChange={(e) => setFormData({...formData, time: e.target.value})}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Выберите</option>
+                    {getAvailableTimes().map((time) => (
+                      <option key={time} value={time}>{time}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                * Если не выберете время, наш специалист сам свяжется с вами
+              </p>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="message">Комментарий</Label>
               <Textarea 
@@ -478,14 +653,105 @@ const Index = () => {
                 value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 placeholder="Опишите ваши пожелания или вопросы..."
-                rows={4}
+                rows={3}
               />
             </div>
             <Button type="submit" size="lg" className="w-full gap-2">
               <Icon name="Send" size={18} />
-              Отправить заявку
+              Записаться на консультацию
             </Button>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!selectedCase} onOpenChange={() => setSelectedCase(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {selectedCase && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-3xl">{selectedCase.name}</DialogTitle>
+                <DialogDescription className="text-base text-primary font-medium">
+                  {selectedCase.product} • {selectedCase.duration}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6 py-4">
+                <div className="rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedCase.image} 
+                    alt={`${selectedCase.name} - результат применения`}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Card className="bg-destructive/5 border-destructive/20">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Icon name="AlertCircle" size={20} className="text-destructive" />
+                        До применения
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm font-medium">{selectedCase.problem}</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-primary/5 border-primary/20">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Icon name="CheckCircle" size={20} className="text-primary" />
+                        После применения
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm font-medium text-primary">{selectedCase.result}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-4 text-lg flex items-center gap-2">
+                    <Icon name="BarChart3" size={20} className="text-primary" />
+                    Показатели улучшения
+                  </h4>
+                  <div className="space-y-4">
+                    {selectedCase.metrics.map((metric, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">{metric.label}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-destructive">{metric.before}</span>
+                            <Icon name="ArrowRight" size={16} className="text-muted-foreground" />
+                            <span className="text-sm text-primary font-bold">{metric.after}</span>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-destructive/30 via-yellow-500/50 to-primary transition-all duration-500"
+                            style={{ width: `${(parseInt(metric.after) / 10) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <Button 
+                    size="lg" 
+                    className="w-full gap-2"
+                    onClick={() => {
+                      setSelectedCase(null);
+                      handleConsultation(selectedCase.product);
+                    }}
+                  >
+                    <Icon name="Calendar" size={20} />
+                    Записаться на консультацию по {selectedCase.product}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
